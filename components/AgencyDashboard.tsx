@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Phone, GraduationCap, Clock, Trash2, BrainCircuit, Users, History } from 'lucide-react';
+import { Search, Phone, GraduationCap, Clock, Trash2, BrainCircuit, Users, History, AlertTriangle } from 'lucide-react';
 import { StudentApplication, FilterCategory } from '../types';
 import { analyzeProfile } from '../services/geminiService';
 
@@ -7,9 +7,10 @@ interface AgencyDashboardProps {
   leads: StudentApplication[];
   onDelete: (id: string) => void;
   onUpdateStatus: (id: string, status: StudentApplication['status']) => void;
+  onClearAll: () => void;
 }
 
-const AgencyDashboard = ({ leads, onDelete, onUpdateStatus }: AgencyDashboardProps) => {
+const AgencyDashboard = ({ leads, onDelete, onUpdateStatus, onClearAll }: AgencyDashboardProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filter, setFilter] = useState<FilterCategory>('All');
   const [analyzingId, setAnalyzingId] = useState<string | null>(null);
@@ -23,7 +24,7 @@ const AgencyDashboard = ({ leads, onDelete, onUpdateStatus }: AgencyDashboardPro
       if (filter === 'Spain') return l.destination === 'Espagne';
       if (filter === 'Portugal') return l.destination === 'Portugal';
       if (filter === 'BlockageReady') return l.canBlockFunds === true;
-      if (filter === 'HasGuarantor') return l.hasGuarantor === true || l.guarantorType !== 'آخر';
+      if (filter === 'HasGuarantor') return l.hasGuarantor === true || (l.guarantorType && l.guarantorType !== 'آخر');
       return true;
     });
   }, [leads, searchTerm, filter]);
@@ -38,8 +39,12 @@ const AgencyDashboard = ({ leads, onDelete, onUpdateStatus }: AgencyDashboardPro
   return (
     <div className="space-y-6" dir="rtl">
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-800">إدارة الطلبات ({filteredLeads.length})</h2>
-        <div className="flex gap-2">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800">إدارة الطلبات ({filteredLeads.length})</h2>
+          <p className="text-sm text-slate-500">مجموع الطلبات الكلي: {leads.length}</p>
+        </div>
+        
+        <div className="flex flex-wrap gap-2 justify-end">
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
@@ -61,6 +66,15 @@ const AgencyDashboard = ({ leads, onDelete, onUpdateStatus }: AgencyDashboardPro
             <option value="BlockageReady">مع بلوكاج ✅</option>
             <option value="HasGuarantor">مع ضامن ✅</option>
           </select>
+          {leads.length > 0 && (
+            <button 
+              onClick={onClearAll}
+              className="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-lg border border-rose-100 hover:bg-rose-100 transition-colors font-bold text-sm"
+            >
+              <AlertTriangle size={16} />
+              حذف الكل
+            </button>
+          )}
         </div>
       </div>
 
@@ -104,6 +118,7 @@ const AgencyDashboard = ({ leads, onDelete, onUpdateStatus }: AgencyDashboardPro
                       <button 
                         onClick={() => onDelete(lead.id)}
                         className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                        title="حذف الطلب"
                       >
                         <Trash2 size={20} />
                       </button>

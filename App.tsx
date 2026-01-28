@@ -30,6 +30,12 @@ const App = () => {
     setLeads((prev: StudentApplication[]) => prev.map((l: StudentApplication) => l.id === id ? { ...l, status } : l));
   };
 
+  const handleClearAllLeads = () => {
+    if (window.confirm('هل أنت متأكد من حذف جميع الطلبات؟ لا يمكن التراجع عن هذا الإجراء.')) {
+      setLeads([]);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
@@ -54,7 +60,16 @@ const App = () => {
           </section>
         )}
         {view === 'form' && <div className="py-12"><StudentForm onComplete={handleNewApplication} /></div>}
-        {view === 'admin' && <div className="max-w-7xl mx-auto px-4 py-8"><AgencyDashboard leads={leads} onDelete={handleDeleteLead} onUpdateStatus={handleUpdateStatus} /></div>}
+        {view === 'admin' && (
+          <div className="max-w-7xl mx-auto px-4 py-8">
+            <AgencyDashboard 
+              leads={leads} 
+              onDelete={handleDeleteLead} 
+              onUpdateStatus={handleUpdateStatus}
+              onClearAll={handleClearAllLeads}
+            />
+          </div>
+        )}
       </main>
 
       <footer className="bg-white border-t border-slate-200 py-10">
