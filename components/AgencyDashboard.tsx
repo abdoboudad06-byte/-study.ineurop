@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Search, Phone, GraduationCap, Clock, Trash2, BrainCircuit, Users, History } from 'lucide-react';
 import { StudentApplication, FilterCategory } from '../types';
@@ -148,7 +147,7 @@ const AgencyDashboard = ({ leads, onDelete, onUpdateStatus }: AgencyDashboardPro
                     <select 
                       className="w-full text-sm bg-slate-50 border border-slate-200 rounded px-2 py-1 font-bold"
                       value={lead.status}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onUpdateStatus(lead.id, e.target.value as any)}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onUpdateStatus(lead.id, e.target.value as StudentApplication['status'])}
                     >
                       <option value="Pending">جديد</option>
                       <option value="Contacted">تم التواصل</option>

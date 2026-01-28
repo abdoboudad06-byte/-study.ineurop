@@ -10,17 +10,14 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "react",
-    "typeRoots": ["./node_modules/@types"],
     "baseUrl": ".",
     "paths": {
-      "react": ["node_modules/@types/react"],
-      "react-dom": ["node_modules/@types/react-dom"]
+      "*": ["node_modules/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
