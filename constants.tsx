@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { LayoutDashboard, UserPlus, Users } from 'lucide-react';
 
@@ -49,5 +48,4 @@ export const NAV_ITEMS = [
   { id: 'leads', label: 'الطلبات الواردة', icon: <Users size={20} /> },
 ];
 
-// الرقم الدولي المحدث للوكالة
-export const AGENCY_PHONE = "34672591352"; 
+export const AGENCY_PHONE = "34672591352";

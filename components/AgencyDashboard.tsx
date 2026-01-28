@@ -10,8 +10,8 @@ interface AgencyDashboardProps {
   onUpdateStatus: (id: string, status: StudentApplication['status']) => void;
 }
 
-const AgencyDashboard: React.FC<AgencyDashboardProps> = ({ leads, onDelete, onUpdateStatus }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const AgencyDashboard = ({ leads, onDelete, onUpdateStatus }: AgencyDashboardProps) => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [filter, setFilter] = useState<FilterCategory>('All');
   const [analyzingId, setAnalyzingId] = useState<string | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<Record<string, string>>({});
@@ -48,13 +48,13 @@ const AgencyDashboard: React.FC<AgencyDashboardProps> = ({ leads, onDelete, onUp
               placeholder="البحث عن اسم أو هاتف..."
               className="pr-10 pl-4 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-64 text-right"
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
             />
           </div>
           <select 
             className="bg-white border border-slate-200 rounded-lg px-4 py-2 outline-none text-right font-bold"
             value={filter}
-            onChange={e => setFilter(e.target.value as FilterCategory)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilter(e.target.value as FilterCategory)}
           >
             <option value="All">جميع الملفات</option>
             <option value="Spain">إسبانيا 🇪🇸</option>
@@ -148,7 +148,7 @@ const AgencyDashboard: React.FC<AgencyDashboardProps> = ({ leads, onDelete, onUp
                     <select 
                       className="w-full text-sm bg-slate-50 border border-slate-200 rounded px-2 py-1 font-bold"
                       value={lead.status}
-                      onChange={e => onUpdateStatus(lead.id, e.target.value as any)}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onUpdateStatus(lead.id, e.target.value as any)}
                     >
                       <option value="Pending">جديد</option>
                       <option value="Contacted">تم التواصل</option>
