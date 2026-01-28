@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
   <head>
@@ -12,7 +11,7 @@
         font-family: 'Inter', 'Noto Sans Arabic', sans-serif;
       }
     </style>
-    <!-- Import Map للمعاينة المباشرة بدون بناء -->
+    <!-- Import Map للمعاينة المباشرة بدون بناء وبدون أخطاء إصدارات -->
     <script type="importmap">
 {
   "imports": {
@@ -31,7 +30,7 @@
   </head>
   <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
-    <!-- نقطة دخول التطبيق لـ Vite وللمتصفح -->
-    <script type="module" src="/index.tsx"></script>
+    <!-- استخدام مسار نسبي لضمان التوافق مع Vite و Vercel -->
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
