@@ -1,7 +1,6 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
-// Added missing 'Users' icon to the lucide-react import list
-import { Search, Filter, Phone, Mail, GraduationCap, MapPin, CheckCircle, Clock, Trash2, BrainCircuit, Users, History } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Search, Phone, GraduationCap, Clock, Trash2, BrainCircuit, Users, History } from 'lucide-react';
 import { StudentApplication, FilterCategory } from '../types';
 import { analyzeProfile } from '../services/geminiService';
 
@@ -18,7 +17,7 @@ const AgencyDashboard: React.FC<AgencyDashboardProps> = ({ leads, onDelete, onUp
   const [aiAnalysis, setAiAnalysis] = useState<Record<string, string>>({});
 
   const filteredLeads = useMemo(() => {
-    return leads.filter(l => {
+    return leads.filter((l: StudentApplication) => {
       const matchesSearch = l.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || l.phone.includes(searchTerm);
       if (!matchesSearch) return false;
 
@@ -33,7 +32,7 @@ const AgencyDashboard: React.FC<AgencyDashboardProps> = ({ leads, onDelete, onUp
   const handleAnalyze = async (lead: StudentApplication) => {
     setAnalyzingId(lead.id);
     const result = await analyzeProfile(lead);
-    setAiAnalysis(prev => ({ ...prev, [lead.id]: result || '' }));
+    setAiAnalysis((prev: Record<string, string>) => ({ ...prev, [lead.id]: result || '' }));
     setAnalyzingId(null);
   };
 
@@ -73,7 +72,7 @@ const AgencyDashboard: React.FC<AgencyDashboardProps> = ({ leads, onDelete, onUp
             <p className="text-slate-500">لا يوجد طلبات مطابقة للبحث.</p>
           </div>
         ) : (
-          filteredLeads.map(lead => (
+          filteredLeads.map((lead: StudentApplication) => (
             <div key={lead.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow p-6">
               <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex-1 space-y-4">
@@ -128,7 +127,7 @@ const AgencyDashboard: React.FC<AgencyDashboardProps> = ({ leads, onDelete, onUp
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    {lead.studyFields.map(f => (
+                    {lead.studyFields.map((f: string) => (
                       <span key={f} className="bg-slate-50 text-slate-500 px-2 py-1 rounded-md border border-slate-200 text-[10px] uppercase font-bold">
                         {f}
                       </span>
