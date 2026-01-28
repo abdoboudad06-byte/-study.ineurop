@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Send, CheckCircle2, ChevronRight, ChevronLeft, School, Globe, Wallet, Users, LayoutGrid, Clock } from 'lucide-react';
+import { Send, CheckCircle2, ChevronRight, ChevronLeft, School, Globe, Wallet, Users, LayoutGrid, Clock, AlertCircle } from 'lucide-react';
 import { StudentApplication, CountryPreference, GuarantorType } from '../types';
 import { STUDY_FIELDS, GUARANTOR_OPTIONS, AGENCY_PHONE, DIPLOMA_TYPES, BAC_YEARS, LAST_STUDY_YEARS, OTHER_DIPLOMA_LIST, GAP_YEARS_OPTIONS } from '../constants';
 
@@ -11,6 +11,8 @@ interface StudentFormProps {
 const StudentForm: React.FC<StudentFormProps> = ({ onComplete }) => {
   const [step, setStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{ fullName?: string; phone?: string; email?: string }>({});
+  
   const [formData, setFormData] = useState<Partial<StudentApplication>>({
     fullName: '',
     phone: '',
@@ -27,7 +29,40 @@ const StudentForm: React.FC<StudentFormProps> = ({ onComplete }) => {
     studyFields: [],
   });
 
-  const nextStep = () => setStep(s => Math.min(s + 1, 4));
+  const validateStep1 = () => {
+    const newErrors: { fullName?: string; phone?: string; email?: string } = {};
+    
+    // Validate Full Name
+    if (!formData.fullName || formData.fullName.trim().length < 3) {
+      newErrors.fullName = 'يرجى إدخال الاسم الكامل (3 أحرف على الأقل)';
+    }
+
+    // Validate Phone (10 digits)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!formData.phone || !phoneRegex.test(formData.phone)) {
+      newErrors.phone = 'يرجى إدخال رقم هاتف صحيح مكون من 10 أرقام (مثال: 0600000000)';
+    }
+
+    // Validate Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      newErrors.email = 'يرجى إدخال بريد إلكتروني صحيح';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const nextStep = () => {
+    if (step === 1) {
+      if (validateStep1()) {
+        setStep(s => Math.min(s + 1, 4));
+      }
+    } else {
+      setStep(s => Math.min(s + 1, 4));
+    }
+  };
+
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
 
   const handleFieldToggle = (field: string) => {
@@ -41,6 +76,8 @@ const StudentForm: React.FC<StudentFormProps> = ({ onComplete }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (step === 1 && !validateStep1()) return;
+
     const finalData: StudentApplication = {
       ...formData as StudentApplication,
       id: Math.random().toString(36).substr(2, 9),
@@ -117,19 +154,51 @@ const StudentForm: React.FC<StudentFormProps> = ({ onComplete }) => {
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">الاسم والنسب الكامل</label>
-                <input required type="text" className="w-full px-5 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-right font-bold"
-                  value={formData.fullName} onChange={e => setFormData({ ...formData, fullName: e.target.value })} placeholder="مثال: محمد العلوي" />
+                <input 
+                  required 
+                  type="text" 
+                  className={`w-full px-5 py-3 rounded-xl border ${errors.fullName ? 'border-rose-500 bg-rose-50' : 'border-slate-200'} focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-right font-bold`}
+                  value={formData.fullName} 
+                  onChange={e => {
+                    setFormData({ ...formData, fullName: e.target.value });
+                    if (errors.fullName) setErrors({ ...errors, fullName: undefined });
+                  }} 
+                  placeholder="مثال: محمد العلوي" 
+                />
+                {errors.fullName && <p className="text-rose-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.fullName}</p>}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">رقم الواتساب</label>
-                  <input required type="tel" className="w-full px-5 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-right font-bold"
-                    value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} placeholder="0612345678" />
+                  <label className="block text-sm font-bold text-slate-700 mb-2">رقم الواتساب (10 أرقام)</label>
+                  <input 
+                    required 
+                    type="tel" 
+                    maxLength={10}
+                    className={`w-full px-5 py-3 rounded-xl border ${errors.phone ? 'border-rose-500 bg-rose-50' : 'border-slate-200'} focus:ring-2 focus:ring-indigo-500 outline-none text-right font-bold`}
+                    value={formData.phone} 
+                    onChange={e => {
+                      const val = e.target.value.replace(/\D/g, ''); // Only allow numbers
+                      setFormData({ ...formData, phone: val });
+                      if (errors.phone) setErrors({ ...errors, phone: undefined });
+                    }} 
+                    placeholder="0612345678" 
+                  />
+                  {errors.phone && <p className="text-rose-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.phone}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">البريد الإلكتروني</label>
-                  <input required type="email" className="w-full px-5 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-right font-bold"
-                    value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder="name@email.com" />
+                  <input 
+                    required 
+                    type="email" 
+                    className={`w-full px-5 py-3 rounded-xl border ${errors.email ? 'border-rose-500 bg-rose-50' : 'border-slate-200'} focus:ring-2 focus:ring-indigo-500 outline-none text-right font-bold`}
+                    value={formData.email} 
+                    onChange={e => {
+                      setFormData({ ...formData, email: e.target.value });
+                      if (errors.email) setErrors({ ...errors, email: undefined });
+                    }} 
+                    placeholder="name@email.com" 
+                  />
+                  {errors.email && <p className="text-rose-500 text-xs mt-1 flex items-center gap-1"><AlertCircle size={12} /> {errors.email}</p>}
                 </div>
               </div>
             </div>
@@ -245,11 +314,18 @@ const StudentForm: React.FC<StudentFormProps> = ({ onComplete }) => {
           ) : <div />}
           
           {step < 4 ? (
-            <button type="button" onClick={nextStep} className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all flex items-center gap-2 mr-auto font-bold">
+            <button 
+              type="button" 
+              onClick={nextStep} 
+              className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all flex items-center gap-2 mr-auto font-bold"
+            >
               التالي <ChevronLeft size={20} />
             </button>
           ) : (
-            <button type="submit" className="bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold hover:bg-emerald-700 shadow-2xl shadow-emerald-100 transition-all flex items-center gap-2 mr-auto font-bold">
+            <button 
+              type="submit" 
+              className="bg-emerald-600 text-white px-12 py-4 rounded-2xl font-bold hover:bg-emerald-700 shadow-2xl shadow-emerald-100 transition-all flex items-center gap-2 mr-auto font-bold"
+            >
               إرسال عبر الواتساب <Send size={20} />
             </button>
           )}

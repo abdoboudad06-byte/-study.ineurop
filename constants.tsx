@@ -49,5 +49,5 @@ export const NAV_ITEMS = [
   { id: 'leads', label: 'الطلبات الواردة', icon: <Users size={20} /> },
 ];
 
-// استبدل هذا الرقم برقم هاتفك بصيغة دولية بدون +
-export const AGENCY_PHONE = "212600000000"; 
+// الرقم الدولي المحدث للوكالة
+export const AGENCY_PHONE = "34672591352"; 

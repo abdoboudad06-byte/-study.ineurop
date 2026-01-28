@@ -4,7 +4,7 @@ import { NAV_ITEMS } from './constants';
 import { StudentApplication } from './types';
 import StudentForm from './components/StudentForm';
 import AgencyDashboard from './components/AgencyDashboard';
-import { GraduationCap, Sparkles, LayoutDashboard, Send, Globe, ChevronRight } from 'lucide-react';
+import { GraduationCap, Sparkles, LayoutDashboard, Send, Globe, ChevronRight, Instagram } from 'lucide-react';
 
 const App: React.FC = () => {
   const [view, setView] = useState<'home' | 'form' | 'admin'>('home');
@@ -171,9 +171,20 @@ const App: React.FC = () => {
 
       <footer className="bg-white border-t border-slate-200 py-10 mt-20 font-noto">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="text-indigo-600" size={24} />
-            <span className="font-bold text-slate-900">study.ineurop © 2025</span>
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <div className="flex items-center gap-2">
+              <GraduationCap className="text-indigo-600" size={24} />
+              <span className="font-bold text-slate-900">study.ineurop © 2025</span>
+            </div>
+            <a 
+              href="https://www.instagram.com/study.ineurop/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-slate-600 hover:text-pink-600 transition-colors text-sm font-medium"
+            >
+              <Instagram size={18} />
+              <span>@study.ineurop</span>
+            </a>
           </div>
           <div className="flex gap-8 text-sm text-slate-500 font-medium">
             <a href="#" className="hover:text-indigo-600">سياسة الخصوصية</a>
